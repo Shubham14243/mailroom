@@ -45,7 +45,7 @@ class MailController:
                 }
                 return jsonify(response), 400
             
-            if Validator.validate_email(data['recipient']) == False or Validator.validate_subject(data['subject']) == False:
+            if Validator.validate_email(data['recipient']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_subject(data['sender_name']) == False:
                 response = {
                     "code": 400,
                     "status": "failure",
@@ -55,7 +55,7 @@ class MailController:
             
             msg = Message(
                 subject=data['subject'],
-                sender=(data['sender'], Config.MAIL_USERNAME),
+                sender=(data['sender_name'], data['sender']),
                 recipients=[data['recipient']],
                 body=data['body']
             )
@@ -165,15 +165,25 @@ class MailController:
             
             for key, value in data['params'].items():
                 mail_body = mail_body.replace(f"{{{{{key}}}}}", str(value))
-            
-            msg = Message(
-                subject=template.subject,
-                sender=template.sender_email,
-                recipients=[data['recipient']],
-                body=mail_body
-            )
-            
-            mail.send(msg)
+                
+            if template.is_html == False:            
+                msg = Message(
+                    subject=template.subject,
+                    sender=(template.sender_name, template.sender_email),
+                    recipients=[data['recipient']],
+                    body=mail_body
+                )
+                
+                mail.send(msg)
+            else:
+                msg = Message(
+                    subject=template.subject,
+                    sender=(template.sender_name, template.sender_email),
+                    recipients=[data['recipient']],
+                    html=mail_body
+                )
+                
+                mail.send(msg)
             
             new_log = MailLog(
                 app_id = template.app_id,

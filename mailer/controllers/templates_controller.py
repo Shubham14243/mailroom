@@ -113,7 +113,7 @@ class TemplatesController:
             response = {
                 "code": 200,
                 "status": "success",
-                "message": "User Apps Found Successfully!"
+                "message": "App Templates Found Successfully!"
             }
             response['templates'] = [template.to_dict() for template in templates_data]
             
@@ -157,7 +157,7 @@ class TemplatesController:
                 }
                 return jsonify(response), 400
             
-            if Validator.validate_name(data['name']) == False and Validator.validate_subject(data['subject']) == False and Validator.validate_name(data['sender_email']) == False:
+            if Validator.validate_name(data['name']) == False or Validator.validate_name(data['sender_name']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_email']) == False:
                 response = {
                     "code": 400,
                     "status": "failure",
@@ -177,6 +177,7 @@ class TemplatesController:
                 app_id = data['app_id'],
                 name = data['name'],
                 subject = data['subject'],
+                sender_name = data['sender_name'],
                 sender_email = data['sender_email'],
                 body = data['body'],
                 is_html = data['is_html'],
@@ -233,7 +234,7 @@ class TemplatesController:
                 }
                 return jsonify(response), 400
             
-            if Validator.validate_name(data['name']) == False and Validator.validate_subject(data['subject']) == False and Validator.validate_name(data['sender_email']) == False:
+            if Validator.validate_name(data['name']) == False or Validator.validate_name(data['sender_name']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_email']) == False:
                 response = {
                     "code": 400,
                     "status": "failure",
@@ -261,6 +262,7 @@ class TemplatesController:
                 
             template.name = data.get('name', template.name)
             template.subject = data.get('subject', template.subject)
+            template.sender_name = data.get('sender_name', template.sender_name)
             template.sender_email = data.get('sender_email', template.sender_email)
             template.body = data.get('body', template.body)
             template.is_html = data.get('is_html', template.is_html)
