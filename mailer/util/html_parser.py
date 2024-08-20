@@ -1,8 +1,18 @@
 import re
+from html.parser import HTMLParser
+
+class MyHTMLParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.valid = True
+
+    def error(self, message):
+        self.valid = False
+
 
 class HTMLParser:
     
-    def text_body(body):
+    def is_valid_text(body):
         
         MAX_LENGTH = 10000  # Adjust as needed
         pattern = r"^[\s\S]*$"
@@ -27,3 +37,12 @@ class HTMLParser:
             return False
 
         return True
+    
+    def is_valid_html(html_text):
+        parser = MyHTMLParser()
+        try:
+            parser.feed(html_text)
+            parser.close()
+        except Exception:
+            return False
+        return parser.valid

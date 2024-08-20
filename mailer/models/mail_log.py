@@ -8,6 +8,7 @@ class MailLog(db.Model):
     to_email = db.Column(db.String(128), nullable=False)
     from_email = db.Column(db.String(128), nullable=False)
     subject = db.Column(db.String(128), nullable=False)
+    body_data = db.Column(db.String(128), nullable=False)
     status = db.Column(db.String(50), nullable=False)
     sent_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -22,6 +23,7 @@ class MailLog(db.Model):
             'to_email': self.to_email,
             'from_email': self.from_email,
             'subject': self.subject,
+            'body_data': self.body_data,
             'status': self.status,
             'sent_at': self.sent_at
         }

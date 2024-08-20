@@ -165,7 +165,7 @@ class TemplatesController:
                 }
                 return jsonify(response), 400
             
-            if HTMLParser.text_body(data['body']) == False:
+            if (data['is_html'] == False and HTMLParser.is_valid_text(data['body']) == False) or (data['is_html'] == True and HTMLParser.is_valid_html(data['body']) == False):
                 response = {
                     "code": 400,
                     "status": "failure",
@@ -242,7 +242,7 @@ class TemplatesController:
                 }
                 return jsonify(response), 400
             
-            if HTMLParser.text_body(data['body']) == False:
+            if (data['is_html'] == False and HTMLParser.is_valid_text(data['body']) == False) or (data['is_html'] == True and HTMLParser.is_valid_html(data['body']) == False):
                 response = {
                     "code": 400,
                     "status": "failure",
