@@ -17,7 +17,7 @@ class ApiKey:
         return api_key
     
     @staticmethod
-    def get_ids_from_api_key(api_key):
+    def verify_api_key(api_key):
         try:
             
             decoded_key = base64.urlsafe_b64decode(api_key.encode('utf-8'))

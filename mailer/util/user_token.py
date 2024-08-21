@@ -43,16 +43,10 @@ class UserToken:
         
         try:
             payload = jwt.decode(token, secret_key, algorithms=['HS256'])
-            return payload
+            return payload['user_id']
         
         except jwt.ExpiredSignatureError:
-            payload = {
-                'user_id': "exp"
-            }
-            return payload
+            return None
         
         except jwt.InvalidTokenError:
-            payload = {
-                'user_id': "inv"
-            }
-            return payload
+            return None

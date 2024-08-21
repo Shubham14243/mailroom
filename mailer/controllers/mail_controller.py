@@ -9,7 +9,7 @@ from mailer.models.mail_log import MailLog
 from mailer.models.app import App
 from mailer.util.validator import Validator
 from mailer.util.user_token import UserToken
-from mailer.config.config import Config
+from mailer.util.api_key import ApiKey
 
 class MailController:
     
@@ -20,38 +20,28 @@ class MailController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
+            else:
+                user_id = payload
             
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
-            
-            if Validator.validate_email(data['recipient']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_subject(data['sender_name']) == False:
+            if Validator.validate_email(data['recipient']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_name']) == False:
                 response = {
                     "code": 400,
                     "status": "failure",
                     "message": "Invalid Data!"
                 }
                 return jsonify(response), 400
+            
+            app = App.query.filter_by(user_id=user_id).first()
+            app_id = 0
+            if app:
+                app_id = app.app_id
             
             msg = Message(
                 subject=data['subject'],
@@ -62,16 +52,13 @@ class MailController:
             
             mail.send(msg)
             
-            app = App.query.filter_by(user_id=user_id).first()
-            
-            app_id = app.app_id if app else 0
-            
             new_log = MailLog(
                 app_id = app_id,
                 template_id = 0,
                 to_email = data['recipient'],
                 from_email = data['sender'],
                 subject = data['subject'],
+                body_data = json.dumps({}),
                 status = "success",
                 sent_at = datetime.datetime.utcnow()
             )
@@ -97,6 +84,7 @@ class MailController:
                 to_email = data['recipient'],
                 from_email = data['sender'],
                 subject = data['subject'],
+                body_data = json.dumps({}),
                 status = "failure",
                 sent_at = datetime.datetime.utcnow()
             )
@@ -118,30 +106,15 @@ class MailController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             if Validator.validate_email(data['recipient']) == False:
                 response = {
@@ -158,6 +131,17 @@ class MailController:
                     "code": 400,
                     "status": "failure",
                     "message": "Invalid Template!"
+                }
+                return jsonify(response), 400
+            
+            api_user = api_app = ''
+            api_user, api_app = ApiKey.verify_api_key(data['api_key'])
+            
+            if api_app != template.app_id or api_user != user_id:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Invalid Email Api Key!"
                 }
                 return jsonify(response), 400
             
@@ -239,30 +223,15 @@ class MailController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             logs = MailLog.query.filter_by(template_id=template_id).all()
             
@@ -299,30 +268,15 @@ class MailController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             logs = MailLog.query.filter_by(app_id=app_id).all()
             
@@ -359,30 +313,15 @@ class MailController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             logs = MailLog.query.filter_by(template_id=data['template_id']).all()
             

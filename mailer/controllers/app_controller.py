@@ -38,30 +38,15 @@ class AppController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             AppController.regenerate_api_key(app_id, user_id)
             
@@ -92,30 +77,15 @@ class AppController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             user_app = App.query.filter_by(user_id=user_id).all()
             
@@ -152,30 +122,15 @@ class AppController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             user_app = App.query.filter_by(app_id=app_id).first()
             
@@ -212,30 +167,15 @@ class AppController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             if Validator.validate_name(data['app_name']) == False:
                 response = {
@@ -289,30 +229,15 @@ class AppController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             if isinstance(data['app_id'], str):
                 response = {

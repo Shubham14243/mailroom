@@ -7,42 +7,25 @@ from mailer.util.encryptor import Encryptor
 from mailer.util.user_token import UserToken
 
 class UserController:
-    @staticmethod
-    def get_users():
-        users = User.query.all()
-        return jsonify([user.to_dict() for user in users])
 
     @staticmethod
-    def get_user(user_id):
+    def get_user(users_id):
         
         try:
             
             payload = UserToken.verify_token()
-            
-            if payload['user_id'] == 'exp':
+            print(payload)
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
+            else:
+                user_id = payload
             
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
-            
-            user = User.query.filter_by(id=user_id).first()
+            user = User.query.filter_by(id=users_id).first()
             
             if not user:
                 response = {
@@ -76,30 +59,15 @@ class UserController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             if len(data['email']) > 0:
                 if Validator.validate_email(data['email']) == False:
@@ -156,30 +124,15 @@ class UserController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
         
             if data['new_password'] != data['confirm_password']:
                 response = {
@@ -236,30 +189,15 @@ class UserController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             if Validator.validate_password(data['password']) == False:
                 response = {

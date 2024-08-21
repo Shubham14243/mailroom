@@ -15,30 +15,15 @@ class TemplatesController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             template = Templates.query.filter_by(template_id=template_id).first()
             
@@ -75,30 +60,15 @@ class TemplatesController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             templates_data = Templates.query.filter_by(app_id=app_id).all()
             
@@ -134,28 +104,15 @@ class TemplatesController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            if isinstance(payload['user_id'], str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             if Validator.validate_name(data['name']) == False or Validator.validate_name(data['sender_name']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_email']) == False:
                 response = {
@@ -211,28 +168,15 @@ class TemplatesController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            if isinstance(payload['user_id'], str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             if Validator.validate_name(data['name']) == False or Validator.validate_name(data['sender_name']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_email']) == False:
                 response = {
@@ -292,30 +236,15 @@ class TemplatesController:
             
             payload = UserToken.verify_token()
             
-            if payload['user_id'] == 'exp':
+            if payload is None:
                 response = {
                     "code": 401,
                     "status": "failure",
-                    "message": "Token Expired"
+                    "message": "Token Expired! Login Again!"
                 }
                 return jsonify(response), 401
-            elif payload['user_id'] == 'inv':
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            user_id = payload['user_id']
-            
-            if isinstance(user_id, str):
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid UserID!"
-                }
-                return jsonify(response), 400
+            else:
+                user_id = payload
             
             template = Templates.query.filter_by(template_id=data['template_id']).first()
             
