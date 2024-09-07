@@ -9,7 +9,7 @@ from mailer.util.user_token import UserToken
 class AuthController:
 
     @staticmethod
-    def signup(data):
+    def create(data):
         
         try:
         
@@ -49,34 +49,24 @@ class AuthController:
             db.session.add(new_user)
             db.session.commit()
             
-            user_token = UserToken.generate_token(new_user.id)
+            response = {}
+            response['user'] = new_user.to_dict()
+            response["status"] = "success"
+            response["code"] = 201
+            response["message"] = "User Created Successfully!"
             
-            response_data = {}
-            response_data['user'] = new_user.to_dict()
-            response_data["status"] = "success"
-            response_data["code"] = 201
-            response_data["message"] = "User SignedUp Successfully!"
-            
-            response = make_response(jsonify(response_data), 201)
-            
-            response.set_cookie(
-                "mailroom_user", 
-                value=user_token, 
-                max_age=datetime.timedelta(hours=29.5)
-            )
-            
-            return response
+            return jsonify(response), 201
         
         except Exception as e:
             response = {
                 "code": 500,
                 "status": "error",
-                "message": f"Error Auth SignUp Controller! {e}"
+                "message": f"Error Auth Create Controller! {e}"
             }
             return jsonify(response), 500
 
     @staticmethod
-    def login(data):
+    def generate(data):
         
         try:
             
@@ -88,7 +78,7 @@ class AuthController:
                 }
                 return jsonify(response), 400
             
-            existing_user = User.query.filter_by(email=data['email'],).first()
+            existing_user = User.query.filter_by(email=data['email']).first()
             if not existing_user:
                 response = {
                     "code": 400,
@@ -109,48 +99,86 @@ class AuthController:
             
             new_user = existing_user.to_dict()
             
-            user_token = UserToken.generate_token(new_user['id'])
+            token_response = UserToken.generate_token(new_user['id'])
             
-            response_data = {}
-            response_data['user'] = new_user
-            response_data["status"] = "success"
-            response_data["code"] = 200
-            response_data["message"] = "User LoggedIn Successfully!"
+            if token_response == None:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Failed to Generate Token!"
+                }
+                return jsonify(response), 400
             
-            response = make_response(jsonify(response_data), 200)
+            existing_user.authtoken = token_response['token']
+            db.session.commit()
             
-            response.set_cookie(
-                "mailroom_user", 
-                value=user_token, 
-                max_age=datetime.timedelta(hours=29.5)
-            )
+            response = {}
+            response['user'] = new_user
+            response["status"] = "success"
+            response["code"] = 200
+            response["token"] = token_response['token']
+            response["expiry"] = token_response['exp']
+            response["message"] = "Token Generated Successfully!"
             
-            return response
+            return jsonify(response), 200
         
         except Exception as e:
             response = {
                 "code": 500,
                 "status": "error",
-                "message": f"Error Auth Login Controller! {e}"
+                "message": f"Error Auth Generate Controller! {e}"
             }
             return jsonify(response), 500
         
     @staticmethod
-    def logout():
+    def validate(data):
         
         try:
+            
+            user_token = data['token']
+            
+            res = UserToken.verify_token(user_token)
+            
+            if res['user_id'] == 0:
+                response = {
+                    "code": 401,
+                    "status": "failure",
+                    "message": "Token Expired!"
+                }
+                return jsonify(response), 401
+            
+            if res['user_id'] == -1:
+                response = {
+                    "code": 401,
+                    "status": "failure",
+                    "message": "Invalid Token!"
+                }
+                return jsonify(response), 401
+            
+            user_id = res['user_id']
+            expiry = res['exp']
+            
+            existing_usertoken = User.query.filter_by(id=user_id).first().get_authtoken()
+            
+            if existing_usertoken != user_token:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Fresh Token Already Generated!"
+                }
+                return jsonify(response), 400
             
             response = make_response(
                     jsonify({
                     "code": 200,
                     "status": "success",
-                    "message": "User LoggedOut Successfully!"
+                    "token": user_token,
+                    "expiry": datetime.datetime.utcfromtimestamp(expiry),
+                    "message": "Valid User Token!"
                 })
             )
             
-            response.set_cookie('mailroom_user', '', expires=0)
-            
-            return response
+            return response, 200
         
         except Exception as e:
             response = {

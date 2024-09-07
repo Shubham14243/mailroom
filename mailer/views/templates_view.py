@@ -1,7 +1,12 @@
 from flask import Blueprint, jsonify, request
+from mailer.middlewares.auth_middleware import Middlewares
 from mailer.controllers.templates_controller import TemplatesController
 
 bp = Blueprint('template', __name__)
+
+@bp.before_request
+def before_request():
+    return Middlewares.authenticate_middleware()
 
 @bp.route('/<int:template_id>', methods=['GET'])
 def get_template(template_id):

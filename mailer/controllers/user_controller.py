@@ -1,4 +1,4 @@
-from flask import jsonify, make_response, request
+from flask import jsonify, make_response, request, g
 from mailer import db
 import datetime
 from mailer.models.user import User
@@ -13,17 +13,7 @@ class UserController:
         
         try:
             
-            payload = UserToken.verify_token()
-            print(payload)
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             user = User.query.filter_by(id=users_id).first()
             
@@ -57,17 +47,7 @@ class UserController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             if len(data['email']) > 0:
                 if Validator.validate_email(data['email']) == False:
@@ -122,17 +102,7 @@ class UserController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
         
             if data['new_password'] != data['confirm_password']:
                 response = {
@@ -187,17 +157,7 @@ class UserController:
     
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             if Validator.validate_password(data['password']) == False:
                 response = {

@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from flask_mail import Mail
 from mailer.config.config import Config
 
@@ -9,6 +10,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
 mail = Mail()
+cors = CORS()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -17,6 +19,7 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     db.init_app(app)
     mail.init_app(app)
+    cors.init_app(app, resources={r"/*": {"origins": "*", "supports_credentials": True}})
     migrate.init_app(app, db, directory='mailer/migrations')
 
     from mailer.views.user_view import bp as user_bp

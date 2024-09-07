@@ -1,4 +1,4 @@
-from flask import jsonify, make_response, request
+from flask import jsonify, make_response, request, g
 from mailer import db
 from mailer import mail
 from flask_mail import Message
@@ -18,17 +18,8 @@ class MailController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
+            print('hi')
             
             if Validator.validate_email(data['recipient']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_name']) == False:
                 response = {
@@ -104,25 +95,16 @@ class MailController:
         
         try:
             
-            payload = UserToken.verify_token()
+            user_id = g.user
             
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
-            
-            if Validator.validate_email(data['recipient']) == False:
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid Recipient!"
-                }
-                return jsonify(response), 400
+            for emails in data['recipient']:
+                if Validator.validate_email(emails) == False:
+                    response = {
+                        "code": 400,
+                        "status": "failure",
+                        "message": "Invalid Recipient!"
+                    }
+                    return jsonify(response), 400
             
             template = Templates.query.filter_by(template_id=data['template_id']).first()
             
@@ -135,13 +117,13 @@ class MailController:
                 return jsonify(response), 400
             
             api_user = api_app = ''
-            api_user, api_app = ApiKey.verify_api_key(data['api_key'])
+            api_user, api_app = ApiKey.verify_api_key(data['mailkey'])
             
             if api_app != template.app_id or api_user != user_id:
                 response = {
                     "code": 400,
                     "status": "failure",
-                    "message": "Invalid Email Api Key!"
+                    "message": "Invalid Email Mail Key!"
                 }
                 return jsonify(response), 400
             
@@ -154,7 +136,7 @@ class MailController:
                 msg = Message(
                     subject=template.subject,
                     sender=(template.sender_name, template.sender_email),
-                    recipients=[data['recipient']],
+                    recipients=data['recipient'],
                     body=mail_body
                 )
                 
@@ -163,16 +145,22 @@ class MailController:
                 msg = Message(
                     subject=template.subject,
                     sender=(template.sender_name, template.sender_email),
-                    recipients=[data['recipient']],
+                    recipients=data['recipient'],
                     html=mail_body
                 )
                 
                 mail.send(msg)
+                
+            email_list = ''
+                
+            for emails in data['recipient']:
+                email_list += emails
+                email_list += '/'
             
             new_log = MailLog(
                 app_id = template.app_id,
                 template_id = template.template_id,
-                to_email = data['recipient'],
+                to_email = email_list,
                 from_email = template.sender_email,
                 subject = template.subject,
                 body_data = json.dumps(data['params']),
@@ -221,17 +209,7 @@ class MailController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             logs = MailLog.query.filter_by(template_id=template_id).all()
             
@@ -266,17 +244,7 @@ class MailController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             logs = MailLog.query.filter_by(app_id=app_id).all()
             
@@ -311,17 +279,7 @@ class MailController:
     
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             logs = MailLog.query.filter_by(template_id=data['template_id']).all()
             

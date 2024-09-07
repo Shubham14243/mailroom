@@ -1,7 +1,12 @@
 from flask import Blueprint, jsonify, request
+from mailer.middlewares.auth_middleware import Middlewares
 from mailer.controllers.app_controller import AppController
 
 bp = Blueprint('app', __name__)
+
+@bp.before_request
+def before_request():
+    return Middlewares.authenticate_middleware()
 
 @bp.route('/create', methods=['POST'])
 def create_app():

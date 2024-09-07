@@ -1,4 +1,4 @@
-from flask import jsonify, make_response, request
+from flask import jsonify, make_response, request, g
 from mailer import db
 import datetime
 from mailer.models.app import App
@@ -36,17 +36,7 @@ class AppController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             AppController.regenerate_api_key(app_id, user_id)
             
@@ -75,17 +65,7 @@ class AppController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             user_app = App.query.filter_by(user_id=user_id).all()
             
@@ -120,17 +100,7 @@ class AppController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             user_app = App.query.filter_by(app_id=app_id).first()
             
@@ -165,17 +135,7 @@ class AppController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             if Validator.validate_name(data['app_name']) == False:
                 response = {
@@ -227,17 +187,7 @@ class AppController:
     
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             if isinstance(data['app_id'], str):
                 response = {

@@ -1,4 +1,4 @@
-from flask import jsonify, make_response, request
+from flask import jsonify, make_response, request, g
 from mailer import db
 import datetime
 from mailer.models.templates import Templates
@@ -13,17 +13,7 @@ class TemplatesController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             template = Templates.query.filter_by(template_id=template_id).first()
             
@@ -58,17 +48,7 @@ class TemplatesController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             templates_data = Templates.query.filter_by(app_id=app_id).all()
             
@@ -102,17 +82,7 @@ class TemplatesController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             if Validator.validate_name(data['name']) == False or Validator.validate_name(data['sender_name']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_email']) == False:
                 response = {
@@ -166,17 +136,7 @@ class TemplatesController:
         
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             if Validator.validate_name(data['name']) == False or Validator.validate_name(data['sender_name']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_email']) == False:
                 response = {
@@ -234,17 +194,7 @@ class TemplatesController:
     
         try:
             
-            payload = UserToken.verify_token()
-            
-            if payload is None:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Token Expired! Login Again!"
-                }
-                return jsonify(response), 401
-            else:
-                user_id = payload
+            user_id = g.user
             
             template = Templates.query.filter_by(template_id=data['template_id']).first()
             
