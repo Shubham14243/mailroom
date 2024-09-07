@@ -6,7 +6,7 @@ class Config:
     
     MAIL_SERVER='smtp.gmail.com'
     MAIL_PORT=587
-    MAIL_USERNAME='guptashubham14243@gmail.com'
-    MAIL_PASSWORD='tazuvjuejutnvfig'
+    MAIL_USERNAME='YOUR_EMAIL'
+    MAIL_PASSWORD='YOUR MAIL APP PASSWORD'
     MAIL_USE_TLS=True
     MAIL_USE_SSL=False
