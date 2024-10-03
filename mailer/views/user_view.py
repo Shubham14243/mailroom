@@ -8,9 +8,9 @@ bp = Blueprint('user', __name__)
 def before_request():
     return Middlewares.authenticate_middleware()
 
-@bp.route('/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    return UserController.get_user(user_id)
+@bp.route('/get', methods=['GET'])
+def get_user():
+    return UserController.get_user()
 
 @bp.route('/update', methods=['POST'])
 def update_user():

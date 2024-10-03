@@ -1,5 +1,6 @@
 class Config:
     SECRET_KEY='6ph3apOqJy3DJVkOq65mOOpN4m1MdvHz'
+    CREATOR='lkSH8ssnASWZhufx1V1tWiWfPYxGkYRN'
     TOKEN_KEY='h8CgHPB25n'
     SQLALCHEMY_DATABASE_URI='sqlite:///mailer.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False

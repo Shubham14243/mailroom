@@ -14,7 +14,7 @@ class HTMLParser:
     
     def is_valid_text(body):
         
-        MAX_LENGTH = 10000  # Adjust as needed
+        MAX_LENGTH = 10000
         pattern = r"^[\s\S]*$"
 
         if not isinstance(body, str):

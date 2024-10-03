@@ -1,0 +1,25 @@
+.font-bold{
+	font-weight: bold;
+}
+.bg-dark{
+	background-color: #282c34;
+}
+.padding-left-4{
+	padding-left: 20px;
+}
+.padding-left-8{
+	padding-left: 40px;
+}
+.padding-left-12{
+	padding-left: 60px;
+}
+lnk:hover {
+	color: black;
+	font-weight: bold;
+}
+.footer{
+	position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}

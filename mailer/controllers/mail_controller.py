@@ -18,27 +18,87 @@ class MailController:
         
         try:
             
-            user_id = g.user
-            print('hi')
+            req_params = ['mailkey', 'app_id', 'sender', 'sender_name', 'recipient', 'subject', 'body']
             
-            if Validator.validate_email(data['recipient']) == False or Validator.validate_subject(data['subject']) == False or Validator.validate_name(data['sender_name']) == False:
+            for par in req_params:
+                if par not in data.keys():
+                    response = {
+                        "code": 400,
+                        "status": "failure",
+                        "message": "Incomplete Request Body!"
+                    }
+                    return jsonify(response), 400
+            
+            user_id = g.user
+            mailkey = data['mailkey']
+            app_id = data['app_id']
+            sender = data['sender']
+            sender_name = data['sender_name']
+            recipient = data['recipient']
+            subject = data['subject']
+            body = data['body']
+            
+            check_flag = 1
+            error_str = 'Invalid Data!'
+            error_val = None
+                
+            error_val =  Validator.validate_email(sender)
+            
+            if error_val != None:
+                error_str += error_val
+                check_flag = 0
+                
+            error_val =  Validator.validate_name(sender_name)
+            
+            if error_val != None:
+                error_str += error_val
+                check_flag = 0
+                
+            error_val =  Validator.validate_email(recipient)
+            
+            if error_val != None:
+                error_str += error_val
+                check_flag = 0
+                
+            error_val =  Validator.validate_subject(subject)
+            
+            if error_val != None:
+                error_str += error_val
+                check_flag = 0
+            
+            if check_flag == 0:
                 response = {
                     "code": 400,
                     "status": "failure",
-                    "message": "Invalid Data!"
+                    "message": error_str
                 }
                 return jsonify(response), 400
             
-            app = App.query.filter_by(user_id=user_id).first()
-            app_id = 0
-            if app:
-                app_id = app.app_id
+            app = App.query.filter_by(app_id=app_id, user_id=user_id).first()
+            if not app:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "App does not Exists!"
+                }
+                return jsonify(response), 400
+            
+            api_user = api_app = ''
+            api_user, api_app = ApiKey.verify_api_key(mailkey)
+            
+            if api_app != int(app_id) or api_user != user_id:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Invalid Email Mail Key!"
+                }
+                return jsonify(response), 400
             
             msg = Message(
-                subject=data['subject'],
-                sender=(data['sender_name'], data['sender']),
-                recipients=[data['recipient']],
-                body=data['body']
+                subject=subject,
+                sender=(sender_name, sender),
+                recipients=[recipient],
+                body=body
             )
             
             mail.send(msg)
@@ -46,9 +106,9 @@ class MailController:
             new_log = MailLog(
                 app_id = app_id,
                 template_id = 0,
-                to_email = data['recipient'],
-                from_email = data['sender'],
-                subject = data['subject'],
+                to_email = recipient,
+                from_email = sender,
+                subject = subject,
                 body_data = json.dumps({}),
                 status = "success",
                 sent_at = datetime.datetime.utcnow()
@@ -62,8 +122,8 @@ class MailController:
                 "status": "success",
                 "message": "Email Sent Successfully!"
             }
-            response['recipient'] = data['recipient']
-            response['subject'] = data['subject']
+            response['recipient'] = recipient
+            response['subject'] = subject
             
             return jsonify(response), 200
         
@@ -72,9 +132,9 @@ class MailController:
             new_log = MailLog(
                 app_id = app_id,
                 template_id = 0,
-                to_email = data['recipient'],
-                from_email = data['sender'],
-                subject = data['subject'],
+                to_email = recipient,
+                from_email = sender,
+                subject = subject,
                 body_data = json.dumps({}),
                 status = "failure",
                 sent_at = datetime.datetime.utcnow()
@@ -86,7 +146,7 @@ class MailController:
             response = {
                 "code": 500,
                 "status": "error",
-                "message": f"Error Mail Send Controller! {e}"
+                "message": f"Error Mail Simple Controller! {e}"
             }
             return jsonify(response), 500
         
@@ -95,10 +155,25 @@ class MailController:
         
         try:
             
+            req_params = ['mailkey', 'recipient', 'params', 'template_id']
+            
+            for par in req_params:
+                if par not in data.keys():
+                    response = {
+                        "code": 400,
+                        "status": "failure",
+                        "message": "Incomplete Request Body!"
+                    }
+                    return jsonify(response), 400
+            
             user_id = g.user
+            mailkey = data['mailkey']
+            recipient = data['recipient']
+            params = data['params']
+            template_id = data['template_id']
             
             for emails in data['recipient']:
-                if Validator.validate_email(emails) == False:
+                if Validator.validate_email(emails) != None:
                     response = {
                         "code": 400,
                         "status": "failure",
@@ -106,9 +181,20 @@ class MailController:
                     }
                     return jsonify(response), 400
             
-            template = Templates.query.filter_by(template_id=data['template_id']).first()
+            template = Templates.query.filter_by(template_id=template_id).first()
             
             if not template:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Template does not Exists!"
+                }
+                return jsonify(response), 400
+            
+            app_id = int(template.app_id)
+            
+            app_data = App.query.filter_by(app_id=app_id, user_id=user_id).first()
+            if not app_data:
                 response = {
                     "code": 400,
                     "status": "failure",
@@ -117,9 +203,9 @@ class MailController:
                 return jsonify(response), 400
             
             api_user = api_app = ''
-            api_user, api_app = ApiKey.verify_api_key(data['mailkey'])
+            api_user, api_app = ApiKey.verify_api_key(mailkey)
             
-            if api_app != template.app_id or api_user != user_id:
+            if api_app != app_id or api_user != user_id:
                 response = {
                     "code": 400,
                     "status": "failure",
@@ -129,14 +215,14 @@ class MailController:
             
             mail_body = template.body
             
-            for key, value in data['params'].items():
+            for key, value in params.items():
                 mail_body = mail_body.replace(f"{{{{{key}}}}}", str(value))
                 
             if template.is_html == False:
                 msg = Message(
                     subject=template.subject,
                     sender=(template.sender_name, template.sender_email),
-                    recipients=data['recipient'],
+                    recipients=recipient,
                     body=mail_body
                 )
                 
@@ -145,7 +231,7 @@ class MailController:
                 msg = Message(
                     subject=template.subject,
                     sender=(template.sender_name, template.sender_email),
-                    recipients=data['recipient'],
+                    recipients=recipient,
                     html=mail_body
                 )
                 
@@ -153,7 +239,7 @@ class MailController:
                 
             email_list = ''
                 
-            for emails in data['recipient']:
+            for emails in recipient:
                 email_list += emails
                 email_list += '/'
             
@@ -163,7 +249,7 @@ class MailController:
                 to_email = email_list,
                 from_email = template.sender_email,
                 subject = template.subject,
-                body_data = json.dumps(data['params']),
+                body_data = json.dumps(params),
                 status = "success",
                 sent_at = datetime.datetime.utcnow()
             )
@@ -176,7 +262,7 @@ class MailController:
                 "status": "success",
                 "message": "Email Sent Successfully!"
             }
-            response['recipient'] = data['recipient']
+            response['recipient'] = recipient
             response['subject'] = template.subject
             
             return jsonify(response), 200
@@ -186,10 +272,10 @@ class MailController:
             new_log = MailLog(
                 app_id = template.app_id,
                 template_id = template.template_id,
-                to_email = data['recipient'],
+                to_email = recipient,
                 from_email = template.sender_email,
                 subject = template.subject,
-                body_data = json.dumps(data['params']),
+                body_data = json.dumps(params),
                 status = "failure",
                 sent_at = datetime.datetime.utcnow()
             )
@@ -210,6 +296,27 @@ class MailController:
         try:
             
             user_id = g.user
+            
+            template = Templates.query.filter_by(template_id=template_id).first()
+            
+            if not template:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Template does not Exists!"
+                }
+                return jsonify(response), 400
+            
+            app_id = int(template.app_id)
+            
+            app_data = App.query.filter_by(app_id=app_id, user_id=user_id).first()
+            if not app_data:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Invalid Template!"
+                }
+                return jsonify(response), 400
             
             logs = MailLog.query.filter_by(template_id=template_id).all()
             
@@ -246,6 +353,15 @@ class MailController:
             
             user_id = g.user
             
+            app_data = App.query.filter_by(app_id=app_id, user_id=user_id).first()
+            if not app_data:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Invalid App!"
+                }
+                return jsonify(response), 400
+            
             logs = MailLog.query.filter_by(app_id=app_id).all()
             
             if not logs:
@@ -279,9 +395,42 @@ class MailController:
     
         try:
             
-            user_id = g.user
+            req_params = ['template_id']
             
-            logs = MailLog.query.filter_by(template_id=data['template_id']).all()
+            for par in req_params:
+                if par not in data.keys():
+                    response = {
+                        "code": 400,
+                        "status": "failure",
+                        "message": "Incomplete Request Body!"
+                    }
+                    return jsonify(response), 400
+            
+            user_id = g.user
+            template_id = data['template_id']
+            
+            template = Templates.query.filter_by(template_id=template_id).first()
+            
+            if not template:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Template does not Exists!"
+                }
+                return jsonify(response), 400
+            
+            app_id = int(template.app_id)
+            
+            app_data = App.query.filter_by(app_id=app_id, user_id=user_id).first()
+            if not app_data:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Invalid Template!"
+                }
+                return jsonify(response), 400
+            
+            logs = MailLog.query.filter_by(template_id=template_id).all()
             
             if not logs:
                 response = {

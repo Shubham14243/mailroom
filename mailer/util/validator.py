@@ -9,16 +9,16 @@ class Validator:
         expr = re.compile(pattern)
 
         if expr.fullmatch(email):
-            return True
+            return None
         else:
-            return False
+            return 'Invalid Email!'
         
     @staticmethod
     def validate_name(name):
         
         if len(name) >= 3:
-            return True
-        return False
+            return None
+        return 'Invalid Name!'
     
     @staticmethod
     def validate_password(password):
@@ -27,9 +27,9 @@ class Validator:
         expr = re.compile(pattern)
         
         if expr.fullmatch(password):
-            return True
+            return None
         else:
-            return False
+            return 'Invalid Password! 5-20 Characters, 1 uppercase, 1 lowercase, 1special character(@$#!%*?&), 1 digit!'
         
     def validate_subject(subject):
     
@@ -37,12 +37,21 @@ class Validator:
         pattern = r"^[a-zA-Z0-9\s\.,;:?!()'\"-]{3,255}$"
 
         if not isinstance(subject, str):
-            return False
+            return 'Invalid Subject! Not String!'
 
         if len(subject) > MAX_LENGTH:
-            return False
+            return 'Invalid Subject! Max Length Exceeded!'
 
         if not re.match(pattern, subject):
-            return False
+            return 'Invalid Subject! Allowed Characters .,;:?!()\'"-!'
 
-        return True
+        return None
+    
+    def validate_domain(userdomain):
+        pattern = r'^(?:localhost|\d{1,3}(?:\.\d{1,3}){3}|[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+)(?::\d{1,5})?(?:\/[^\s]*)?$'
+        expr = re.compile(pattern)
+
+        if expr.fullmatch(userdomain):
+            return None
+        else:
+            return 'Invalid Domain!'

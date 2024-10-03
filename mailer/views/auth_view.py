@@ -3,11 +3,6 @@ from mailer.controllers.auth_controller import AuthController
 
 bp = Blueprint('auth', __name__)
 
-@bp.route('/create', methods=['POST'])
-def create():
-    data = request.get_json()
-    return AuthController.create(data)
-
 @bp.route('/generate', methods=['POST'])
 def generate():
     data = request.get_json()
