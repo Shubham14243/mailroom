@@ -75,6 +75,8 @@
 				    <!-- API Documentation -->
 				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-2"><span class="theme-icon-holder me-2"><i class="fas fa-laptop-code"></i></span>API Documentation</a></li>
 
+					<li class="nav-item"><a class="nav-link scrollto" href="#item-2-7-0"><span class="font-bold">Common Error</span></a></li>
+
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-1-0"><span class="font-bold">Admin</span></a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-1-1">Admin/Create User</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-1-2">Admin/Update User Domain</a></li>
@@ -124,7 +126,7 @@
 			    <article class="docs-article" id="section-1">
 				    
 					<header class="docs-header">
-					    <h1 class="docs-heading">Introduction <span class="docs-time">Last updated: 2019-06-01</span></h1>
+					    <h1 class="docs-heading">Introduction <span class="docs-time">Last updated: 2024-10-05</span></h1>
 					    <section class="docs-intro">
 						    <p>
 								Welcome to our comprehensive API documentation, specifically designed to facilitate the integration and management of template-based email communications within your applications. This API empowers users to register, create secure tokens, manage multiple applications, and customize email templates for sending tailored messages. With a range of features that include user management, authorization, application creation, and streamlined email handling, our API offers robust tools for efficient email operations. You can create and update email templates, send messages using these templates, and access detailed email logs to ensure transparency and accountability in your communications. Explore each section for detailed endpoints, parameters, and usage examples to maximize your API experience in managing template-based emails.
@@ -203,6 +205,77 @@
 						    <p>Welcome to our API documentation, a comprehensive resource designed to help developers integrate and utilize our platform effectively. This documentation provides detailed information about the available endpoints, authentication methods, and functionality of the API, allowing you to manage users, applications, and email communications seamlessly. Whether you are a seasoned developer or new to our platform, you will find clear guidelines, usage examples, and best practices to facilitate a smooth integration process. Our goal is to empower you with the tools and knowledge necessary to leverage our API to enhance your applications and improve user experiences.</p>
 						</section><!--//docs-intro-->
 				    </header>
+
+				    <!-- Common Error -->
+				    <section class="docs-section" id="item-2-7-0">
+						<h2 class="section-heading">Common Errors</h2>
+						<p>
+							In this section, we address common errors encountered when interacting with the API. These errors typically occur when requests are made without proper authentication or when access to certain resources is restricted. Understanding these errors will help you troubleshoot issues related to access, ensuring smoother and more secure API interactions.
+						</p> 
+                        <h5>Common Error Responses</h5>
+                        <div class="callout-block callout-block-warning">
+                            <div class="content">
+                                <h4 class="callout-title">
+	                                <span class="callout-icon-holder me-1">
+		                                <i class="fas fa-bullhorn"></i>
+		                            </span><!--//icon-holder-->
+	                                Code - 401
+	                            </h4>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">401</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Authorization Header Missing!"</span><br>
+                            			}
+                            	</code>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">401</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Token Missing in Authorization Header!"</span><br>
+                            			}
+                            	</code>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">401</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Token Expired!"</span><br>
+                            			}
+                            	</code>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">401</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid Token!"</span><br>
+                            			}
+                            	</code>
+                            </div><!--//content-->
+                        </div>
+                        <div class="callout-block callout-block-warning">
+                            <div class="content">
+                                <h4 class="callout-title">
+	                                <span class="callout-icon-holder me-1">
+		                                <i class="fas fa-bullhorn"></i>
+		                            </span><!--//icon-holder-->
+	                                Code - 403
+	                            </h4>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">403</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"CORS Policy: Domain Not Allowed!"</span><br>
+                            			}
+                            	</code>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">403</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Request Blocked: Failed to get request host!"</span><br>
+                            			}
+                            	</code>
+                            </div><!--//content-->
+                        </div>
+					</section>
 
 				    <!-- Admin -->
 				    <section class="docs-section" id="item-2-1-0">

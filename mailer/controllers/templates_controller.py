@@ -307,7 +307,7 @@ class TemplatesController:
             template.sender_name = sender_name if sender_name else template.sender_name
             template.sender_email = sender_email if sender_email else template.sender_email
             template.body = body if body else template.body
-            template.is_html = is_html if is_html else template.is_html
+            template.is_html = is_html if is_html is not None else template.is_html
             db.session.commit()
             
             response = {
