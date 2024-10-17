@@ -11,4 +11,3 @@ class Config:
     MAIL_PASSWORD='APP_PASSWORD'
     MAIL_USE_TLS=True
     MAIL_USE_SSL=False
-    

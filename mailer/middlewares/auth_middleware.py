@@ -45,7 +45,19 @@ class Middlewares:
             }
             return jsonify(response), 401
 
-        g.user = decoded_token['user_id']
+        user_id = decoded_token['user_id']
+            
+        existing_usertoken = User.query.filter_by(id=user_id).first().get_authtoken()
+            
+        if existing_usertoken != token:
+            response = {
+                "code": 400,
+                "status": "failure",
+                "message": "Fresh Token Already Generated!"
+            }
+            return jsonify(response), 400
+        
+        g.user = user_id
         
         cors_res = Middlewares.cors_check(g.user)
         

@@ -165,6 +165,81 @@ class AuthController:
             response = {
                 "code": 500,
                 "status": "error",
-                "message": f"Error Auth Logout Controller! {e}"
+                "message": f"Error Auth Validate Controller! {e}"
+            }
+            return jsonify(response), 500
+        
+    @staticmethod
+    def revoke(data):
+        
+        try:
+            
+            req_params = ['token']
+            
+            for par in req_params:
+                if par not in data.keys():
+                    response = {
+                        "code": 400,
+                        "status": "failure",
+                        "message": "Incomplete Request Body!"
+                    }
+                    return jsonify(response), 400
+            
+            user_token = data['token']
+            
+            res = UserToken.verify_token(user_token)
+            
+            if res['user_id'] == 0:
+                response = {
+                    "code": 401,
+                    "status": "failure",
+                    "message": "Token Expired!"
+                }
+                return jsonify(response), 401
+            
+            if res['user_id'] == -1:
+                response = {
+                    "code": 401,
+                    "status": "failure",
+                    "message": "Invalid Token!"
+                }
+                return jsonify(response), 401
+            
+            user_id = res['user_id']
+            expiry = res['exp']
+            
+            cors_res = Middlewares.cors_check(user_id)
+            
+            if cors_res is not None:
+                return cors_res
+            
+            user = User.query.filter_by(id=user_id).first()
+            
+            existing_usertoken = user.get_authtoken()
+            
+            if existing_usertoken != user_token:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Fresh Token Already Generated!"
+                }
+                return jsonify(response), 400
+            
+            user.authtoken = None if user else user.authtoken
+            db.session.commit()           
+            
+            response = {
+                "code": 200,
+                "status": "success",
+                "message": "User Token Revoked!"
+            }
+            
+            return jsonify(response), 200
+        
+        except Exception as e:
+            response = {
+                "code": 500,
+                "status": "error",
+                "message": f"Error Auth Revoke Controller! {e}"
             }
             return jsonify(response), 500

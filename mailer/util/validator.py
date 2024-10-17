@@ -34,7 +34,7 @@ class Validator:
     def validate_subject(subject):
     
         MAX_LENGTH = 255
-        pattern = r"^[a-zA-Z0-9\s\.,;:?!()'\"-]{3,255}$"
+        pattern = r"^[a-zA-Z0-9\s\.,;:?!()|'\"-]{3,255}$"
 
         if not isinstance(subject, str):
             return 'Invalid Subject! Not String!'
@@ -43,7 +43,7 @@ class Validator:
             return 'Invalid Subject! Max Length Exceeded!'
 
         if not re.match(pattern, subject):
-            return 'Invalid Subject! Allowed Characters .,;:?!()\'"-!'
+            return 'Invalid Subject! Allowed Characters .,;:?!()|\'"-!'
 
         return None
     

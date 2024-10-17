@@ -84,6 +84,7 @@
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-2-0"><span class="font-bold">Authorization</span></a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-2-1">Auth/Generate</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-2-2">Auth/Validate</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-2-3">Auth/Revoke</a></li>
 				    
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-3-0"><span class="font-bold">User</span></a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-3-1">User/get</a></li>
@@ -845,7 +846,137 @@
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">500</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"error"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Error Auth Generate Controller!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Error Auth Validate Controller!"</span><br>
+                            			}
+                            	</code>
+                            </div><!--//content-->
+                        </div>
+					</section>
+
+					<section class="docs-section" id="item-2-2-3">
+						<h2 class="section-heading">Auth/Revoke</h2>
+                        <p>
+                            The Revoke endpoint is specifically designed to invalidate an existing token, preventing its further use in API interactions. Once revoked, the token can no longer be used, and a new token will be required for subsequent access.
+                        </p>  
+						<div class="callout-block callout-block-info">                          
+                            <div class="content">
+                                <h4 class="callout-title">
+	                                Url : {host}/api/auth/revoke
+	                            </h4>	                            
+                                <h4 class="callout-title">
+	                                Method : POST
+	                            </h4>                         
+                                <h4 class="callout-title">
+	                                Request Headers
+	                            </h4>
+	                            <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"Content-Type"</span>: <span class="hljs-string">"application/json"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"Accept"</span>: <span class="hljs-string">"*/*"</span>,<br>
+											<span class="padding-left-4 hljs-attr">"Autorization"</span>: <span class="hljs-string">"Bearer {jwt_user_token}"</span><br>
+                            			}
+                            	</code>                         
+                                <h4 class="callout-title">
+	                                Request Body
+	                            </h4>
+	                            <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"token"</span>: <span class="hljs-string">"{jwt_user_token}"</span><br>
+                            			}
+                            	</code>
+                            </div>
+                        </div>
+                        <h5>Validations</h5>
+						<div class="table-responsive my-4">
+							<table class="table table-bordered">
+								<tbody>
+								    <tr>
+									    <th class="theme-bg-light"><span class="theme-link">token</span></th>
+									    <td>Should be a jwt user access token which will be validated!</td>
+									    <td>Required</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+                        <h5>Response</h5>
+                        <div class="callout-block callout-block-success">
+                            <div class="content">
+                                <h4 class="callout-title">
+	                                <span class="callout-icon-holder me-1">
+		                                <i class="fas fa-thumbs-up"></i>
+		                            </span><!--//icon-holder-->
+	                                Code - 200
+	                            </h4>
+	                            <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">200</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"User Token Revoked!"</span><br>
+                            			}
+                            	</code>
+                            </div>
+                        </div>
+                        <div class="callout-block callout-block-warning">
+                            <div class="content">
+                                <h4 class="callout-title">
+	                                <span class="callout-icon-holder me-1">
+		                                <i class="fas fa-bullhorn"></i>
+		                            </span><!--//icon-holder-->
+	                                Code - 400
+	                            </h4>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Incomplete Request Body!"</span><br>
+                            			}
+                            	</code>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Fresh Token Already Generated!"</span><br>
+                            			}
+                            	</code>
+                            </div><!--//content-->
+                        </div>
+                        <div class="callout-block callout-block-warning">
+                            <div class="content">
+                                <h4 class="callout-title">
+	                                <span class="callout-icon-holder me-1">
+		                                <i class="fas fa-bullhorn"></i>
+		                            </span><!--//icon-holder-->
+	                                Code - 401
+	                            </h4>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">401</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Token Expired!"</span><br>
+                            			}
+                            	</code>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">401</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid Token!"</span><br>
+                            			}
+                            	</code>
+                            </div><!--//content-->
+                        </div>
+                        <div class="callout-block callout-block-danger me-1">
+                            <div class="content">
+                                <h4 class="callout-title">
+	                                <span class="callout-icon-holder">
+		                                <i class="fas fa-exclamation-triangle"></i>
+		                            </span><!--//icon-holder-->
+	                                Code - 500
+	                            </h4>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">500</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"error"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Error Auth Revoke Controller!"</span><br>
                             			}
                             	</code>
                             </div><!--//content-->
