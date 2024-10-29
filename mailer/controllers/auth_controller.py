@@ -5,7 +5,6 @@ from mailer.models.user import User
 from mailer.util.validator import Validator
 from mailer.util.encryptor import Encryptor
 from mailer.util.user_token import UserToken
-from mailer.middlewares.auth_middleware import Middlewares
 
 class AuthController:
 
@@ -58,11 +57,6 @@ class AuthController:
             new_user = existing_user.to_dict()
             
             user_id = new_user['id']
-            
-            cors_res = Middlewares.cors_check(user_id)
-            
-            if cors_res is not None:
-                return cors_res
             
             token_response = UserToken.generate_token(user_id)
             
@@ -136,11 +130,6 @@ class AuthController:
             user_id = res['user_id']
             expiry = res['exp']
             
-            cors_res = Middlewares.cors_check(user_id)
-            
-            if cors_res is not None:
-                return cors_res
-            
             existing_usertoken = User.query.filter_by(id=user_id).first().get_authtoken()
             
             if existing_usertoken != user_token:
@@ -206,12 +195,6 @@ class AuthController:
                 return jsonify(response), 401
             
             user_id = res['user_id']
-            expiry = res['exp']
-            
-            cors_res = Middlewares.cors_check(user_id)
-            
-            if cors_res is not None:
-                return cors_res
             
             user = User.query.filter_by(id=user_id).first()
             

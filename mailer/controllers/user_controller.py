@@ -6,6 +6,7 @@ from mailer.models.templates import Templates
 from mailer.models.mail_log import MailLog
 from mailer.util.validator import Validator
 from mailer.util.encryptor import Encryptor
+from mailer.middlewares.origin_check import Origin
 
 class UserController:
 
@@ -301,6 +302,8 @@ class UserController:
             
             db.session.delete(user)
             db.session.commit()
+            
+            Origin.delete_domain(user_id)
             
             response = {
                 "code": 200,

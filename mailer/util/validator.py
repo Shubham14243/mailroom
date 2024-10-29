@@ -48,7 +48,7 @@ class Validator:
         return None
     
     def validate_domain(userdomain):
-        pattern = r'^(?:localhost|\d{1,3}(?:\.\d{1,3}){3}|[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+)(?::\d{1,5})?(?:\/[^\s]*)?$'
+        pattern = r'^(https?:\/\/)(?:localhost|\d{1,3}(?:\.\d{1,3}){3}|[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+)(?::\d{1,5})?(?:\/[^\s]*)?$'
         expr = re.compile(pattern)
 
         if expr.fullmatch(userdomain):

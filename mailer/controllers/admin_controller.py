@@ -4,6 +4,7 @@ from mailer.models.user import User
 from mailer.util.validator import Validator
 from mailer.util.encryptor import Encryptor
 from mailer.config.config import Config
+from mailer.middlewares.origin_check import Origin
 
 class AdminController:
 
@@ -103,6 +104,8 @@ class AdminController:
             db.session.add(new_user)
             db.session.commit()
             
+            Origin.add_domain(new_user.id, domain)
+            
             response = {}
             response['user'] = new_user.to_dict()
             response["status"] = "success"
@@ -164,8 +167,10 @@ class AdminController:
                 }
                 return jsonify(response), 400
             
-            existing_user.userdomain = domain if domain else existing_user.userdomain
+            existing_user.userdomain = domain
             db.session.commit()
+            
+            Origin.update_domain(existing_user.id, domain)
             
             response = {}
             response['domain'] = domain

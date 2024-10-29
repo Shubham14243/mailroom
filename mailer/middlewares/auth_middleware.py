@@ -7,9 +7,12 @@ class Middlewares:
     @staticmethod
     def authenticate_middleware():
         
+        if request.method == 'OPTIONS':
+            return None
+        
         auth_header = request.headers.get('Authorization')
 
-        if not auth_header:
+        if not auth_header or auth_header == None:
             response = {
                 "code": 401,
                 "status": "failure",
@@ -58,44 +61,5 @@ class Middlewares:
             return jsonify(response), 400
         
         g.user = user_id
-        
-        cors_res = Middlewares.cors_check(g.user)
-        
-        if cors_res is not None:
-            return cors_res
-        
-        return None
-        
-    
-    def cors_check(user_id):
-        
-        origin = request.host
-        if origin:
-            user = User.query.filter_by(id=user_id).first()
-            
-            if not user:
-                response = {
-                    "code": 401,
-                    "status": "failure",
-                    "message": "Invalid Token!"
-                }
-                return jsonify(response), 401
-            
-            allowed_domain = user.get_userdomain()
-            
-            if origin != allowed_domain:
-                response = {
-                    "code": 403,
-                    "status": "failure",
-                    "message": "CORS Policy: Domain Not Allowed!"
-                }
-                return jsonify(response), 403
-        else:
-            response = {
-                "code": 403,
-                "status": "failure",
-                "message": "Request Blocked: Failed to get request host!"
-            }
-            return jsonify(response), 403
         
         return None
