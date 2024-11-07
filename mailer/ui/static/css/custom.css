@@ -17,9 +17,22 @@ lnk:hover {
 	color: black;
 	font-weight: bold;
 }
-.footer{
-	position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper {
+    flex: 1; /* Allows the wrapper to take up remaining space */
+}
+
+.footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto; /* Pushes footer to bottom */
 }

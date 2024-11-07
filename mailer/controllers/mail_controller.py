@@ -2,13 +2,15 @@ from flask import jsonify, make_response, request, g
 from mailer import db
 from mailer import mail
 from flask_mail import Message
+from sqlalchemy import desc
 import datetime
 import json
 from mailer.models.templates import Templates
 from mailer.models.mail_log import MailLog
+from mailer.models.user import User
 from mailer.models.app import App
 from mailer.util.validator import Validator
-from mailer.util.user_token import UserToken
+from mailer.util.encryptor import Encryptor
 from mailer.util.api_key import ApiKey
 
 class MailController:
@@ -291,47 +293,51 @@ class MailController:
             return jsonify(response), 500
         
     @staticmethod
-    def get_template_logs(template_id):
+    def get_logs(limit=None, offset=None):
         
         try:
             
+            if limit is not None and limit > 100:
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Max Limit is 100 logs!"
+                }
+                return jsonify(response), 400
+            
             user_id = g.user
             
-            template = Templates.query.filter_by(template_id=template_id).first()
+            app_ids = db.session.query(App.app_id).filter_by(user_id=user_id).all()
             
-            if not template:
+            if not app_ids or app_ids == []:
                 response = {
                     "code": 400,
                     "status": "failure",
-                    "message": "Template does not Exists!"
+                    "message": "User Apps not Found!"
                 }
                 return jsonify(response), 400
             
-            app_id = int(template.app_id)
+            app_ids = [app.app_id for app in app_ids]
             
-            app_data = App.query.filter_by(app_id=app_id, user_id=user_id).first()
-            if not app_data:
+            logs_query = MailLog.query.filter(MailLog.app_id.in_(app_ids)).order_by(desc(MailLog.log_id))
+            
+            logs_query = logs_query.limit(limit if limit is not None else 100)
+            logs_query = logs_query.offset(offset if offset is not None else 0)
+                
+            logs = logs_query.all()
+            
+            if not logs or logs == []:
                 response = {
                     "code": 400,
                     "status": "failure",
-                    "message": "Invalid Template!"
-                }
-                return jsonify(response), 400
-            
-            logs = MailLog.query.filter_by(template_id=template_id).all()
-            
-            if not logs:
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid Template or No Logs!"
+                    "message": "Logs Not Found!"
                 }
                 return jsonify(response), 400
             
             response = {
                 "code": 200,
                 "status": "success",
-                "message": "Template Logs Found Successfully!"
+                "message": "Email Logs Found Successfully!"
             }
             response['logs'] = [log.to_dict() for log in logs]
             
@@ -342,51 +348,7 @@ class MailController:
             response = {
                 "code": 500,
                 "status": "error",
-                "message": f"Error Mail Template Logs Controller! {e}"
-            }
-            return jsonify(response), 500
-        
-    @staticmethod
-    def get_app_logs(app_id):
-        
-        try:
-            
-            user_id = g.user
-            
-            app_data = App.query.filter_by(app_id=app_id, user_id=user_id).first()
-            if not app_data:
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid App!"
-                }
-                return jsonify(response), 400
-            
-            logs = MailLog.query.filter_by(app_id=app_id).all()
-            
-            if not logs:
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "Invalid App or No Logs!"
-                }
-                return jsonify(response), 400
-            
-            response = {
-                "code": 200,
-                "status": "success",
-                "message": "App Logs Found Successfully!"
-            }
-            response['logs'] = [log.to_dict() for log in logs]
-            
-            return jsonify(response), 200
-        
-        except Exception as e:
-            
-            response = {
-                "code": 500,
-                "status": "error",
-                "message": f"Error Mail App Logs Controller! {e}"
+                "message": f"Error Mail Logs Controller! {e}"
             }
             return jsonify(response), 500
     
@@ -395,7 +357,7 @@ class MailController:
     
         try:
             
-            req_params = ['template_id']
+            req_params = ['password']
             
             for par in req_params:
                 if par not in data.keys():
@@ -407,48 +369,58 @@ class MailController:
                     return jsonify(response), 400
             
             user_id = g.user
-            template_id = data['template_id']
+            password = data['password']
             
-            template = Templates.query.filter_by(template_id=template_id).first()
-            
-            if not template:
+            if Validator.validate_password(password) != None:
                 response = {
                     "code": 400,
                     "status": "failure",
-                    "message": "Template does not Exists!"
+                    "message": "Invalid Data! Invalid Password!"
                 }
                 return jsonify(response), 400
             
-            app_id = int(template.app_id)
+            app_ids = db.session.query(App.app_id).filter_by(user_id=user_id).all()
             
-            app_data = App.query.filter_by(app_id=app_id, user_id=user_id).first()
-            if not app_data:
+            if not app_ids or app_ids == []:
                 response = {
                     "code": 400,
                     "status": "failure",
-                    "message": "Invalid Template!"
+                    "message": "User Apps not Found!"
                 }
                 return jsonify(response), 400
             
-            logs = MailLog.query.filter_by(template_id=template_id).all()
+            app_ids = [app.app_id for app in app_ids]
             
-            if not logs:
+            existing_user = User.query.filter_by(id=user_id).first()
+            if not existing_user:
                 response = {
                     "code": 400,
                     "status": "failure",
-                    "message": "Template Logs does not Exists!"
+                    "message": "User does not Exists!"
                 }
                 return jsonify(response), 400
             
-            for log in logs:
-                db.session.delete(log)
+            password_hash = existing_user.get_password_hash()
+            
+            if not Encryptor.verify_password(password_hash, password) :
+                response = {
+                    "code": 400,
+                    "status": "failure",
+                    "message": "Invalid Password!"
+                }
+                return jsonify(response), 400
+            
+            for app_id in app_ids:
+                logs = MailLog.query.filter_by(app_id=app_id).all()
+                for log in logs:
+                    db.session.delete(log)
                 db.session.commit()
             
             response = make_response(
                     jsonify({
                     "code": 200,
                     "status": "success",
-                    "message": "Template Logs Cleared Successfully!"
+                    "message": "Email Logs Cleared Successfully!"
                 }), 200
             )
             

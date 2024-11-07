@@ -23,10 +23,8 @@ def clear_logs():
     data = request.get_json()
     return MailController.clear_logs(data)
 
-@bp.route('/logs/<int:template_id>', methods=['GET'])
-def get_template_logs(template_id):
-    return MailController.get_template_logs(template_id)
-
-@bp.route('/applogs/<int:app_id>', methods=['GET'])
-def get_app_logs(app_id):
-    return MailController.get_app_logs(app_id)
+@bp.route('/logs', methods=['GET'])
+def get_logs():
+    limit = request.args.get('limit', type=int)
+    offset = request.args.get('offset', type=int)
+    return MailController.get_logs(limit=limit, offset=offset)

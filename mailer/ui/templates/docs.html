@@ -109,9 +109,8 @@
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-6-0"><span class="font-bold">Mail</span></a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-6-1">Mail/Simple</a></li>
 				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-6-2">Mail/Send</a></li>
-				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-6-3">Mail/Template Email Logs</a></li>
-				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-6-4">Mail/App Email Logs</a></li>
-				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-6-5">Mail/Clear Logs</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-6-3">Mail/Email Logs</a></li>
+				    <li class="nav-item"><a class="nav-link scrollto" href="#item-2-6-4">Mail/Clear Logs</a></li>
 
 				    <!-- FAQ -->
 				    <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-3-0"><span class="theme-icon-holder me-2"><i class="fas fa-lightbulb"></i></span>FAQs</a></li>
@@ -127,7 +126,7 @@
 			    <article class="docs-article" id="section-1">
 				    
 					<header class="docs-header">
-					    <h1 class="docs-heading">Introduction <span class="docs-time">Last updated: 2024-10-05</span></h1>
+					    <h1 class="docs-heading">Introduction <span class="docs-time">Last updated: 07 Nov'24</span></h1>
 					    <section class="docs-intro">
 						    <p>
 								Welcome to our comprehensive API documentation, specifically designed to facilitate the integration and management of template-based email communications within your applications. This API empowers users to register, create secure tokens, manage multiple applications, and customize email templates for sending tailored messages. With a range of features that include user management, authorization, application creation, and streamlined email handling, our API offers robust tools for efficient email operations. You can create and update email templates, send messages using these templates, and access detailed email logs to ensure transparency and accountability in your communications. Explore each section for detailed endpoints, parameters, and usage examples to maximize your API experience in managing template-based emails.
@@ -3073,14 +3072,14 @@
 					</section>
 
 					<section class="docs-section" id="item-2-6-3">
-						<h2 class="section-heading">Mail/Template Email Logs</h2>
+						<h2 class="section-heading">Mail/Email Logs</h2>
 						<p>
-                            This endpoint is designed to retrieve email logs specific to template-based emails. It allows authorized users to access detailed records of all template emails sent, providing insights into delivery status, timestamps, and other relevant data for tracking and auditing purposes.
+                            This endpoint is designed to retrieve email logs. It allows authorized users to access detailed records of all emails sent, providing insights into delivery status, timestamps, and other relevant data for tracking and auditing purposes.
                         </p>  
 						<div class="callout-block callout-block-info">                          
                             <div class="content">
                                 <h4 class="callout-title">
-	                                Url : {host}/api/mail/logs/{template_id}
+	                                Url : {host}/api/mail/logs or {host}/api/mail/logs?limit=50&amp;offset=0
 	                            </h4>	                            
                                 <h4 class="callout-title">
 	                                Method : GET
@@ -3105,6 +3104,28 @@
                             	</code>
                             </div>
                         </div>
+                        <h5>Validations</h5>
+						<div class="table-responsive my-4">
+							<table class="table table-bordered">
+								<tbody>
+								    <tr>
+									    <th class="theme-bg-light"><span class="theme-link">default</span></th>
+									    <td>If limit and offset are not provided by default it will provide the latest 100 logs!</td>
+									    <td>Required</td>
+									</tr>
+								    <tr>
+									    <th class="theme-bg-light"><span class="theme-link">limit</span></th>
+									    <td>Should be the number of logs in integer and less than or equal to 100!</td>
+									    <td>Optional</td>
+									</tr>
+								    <tr>
+									    <th class="theme-bg-light"><span class="theme-link">offset</span></th>
+									    <td>Should be a valid integer offset!</td>
+									    <td>Optional</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
                         <h5>Response</h5>
                         <div class="callout-block callout-block-success">
                             <div class="content">
@@ -3118,7 +3139,7 @@
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">200</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Template Logs Found Successfully!"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Email Logs Found Successfully!"</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"logs"</span>: [<br>
                             					<span class="padding-left-8">{</span><br>
 		                            				<span class="padding-left-12 hljs-attr">"log_id"</span>: <span class="hljs-literal">789</span>,<br>
@@ -3159,21 +3180,21 @@
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Template does not Exists!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"User Apps not Found!"</span><br>
                             			}
                             	</code>
                                 <code class="hljs bg-dark col-md-6 mb-2">
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid Template!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Logs Not Found!"</span><br>
                             			}
                             	</code>
                                 <code class="hljs bg-dark col-md-6 mb-2">
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid Template or No Logs!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Max Limit is 100 logs!"</span><br>
                             			}
                             	</code>
                             </div><!--//content-->
@@ -3190,7 +3211,7 @@
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">500</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"error"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Error Mail Template Logs Controller!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Error Mail Logs Controller!"</span><br>
                             			}
                             	</code>
                             </div><!--//content-->
@@ -3198,124 +3219,6 @@
                     </section>
 
 					<section class="docs-section" id="item-2-6-4">
-						<h2 class="section-heading">Mail/App Email Logs</h2>
-						<p>
-                            This endpoint is designed to retrieve email logs associated with a specific application. It allows authorized users to access detailed records of all emails sent from their application, providing valuable insights into delivery status, timestamps, and performance metrics for effective monitoring and management of email communications.
-                        </p>  
-						<div class="callout-block callout-block-info">                          
-                            <div class="content">
-                                <h4 class="callout-title">
-	                                Url : {host}/api/mail/applogs/{app_id}
-	                            </h4>	                            
-                                <h4 class="callout-title">
-	                                Method : GET
-	                            </h4>                         
-                                <h4 class="callout-title">
-	                                Request Headers
-	                            </h4>
-	                            <code class="hljs bg-dark col-md-6 mb-2">
-                            			{<br>
-                            				<span class="padding-left-4 hljs-attr">"Content-Type"</span>: <span class="hljs-string">"application/json"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"Accept"</span>: <span class="hljs-string">"*/*"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"Authorization"</span>: <span class="hljs-string">"Bearer {jwt_authorization_token}"</span><br>
-                            				
-                            			}
-                            	</code>                         
-                                <h4 class="callout-title">
-	                                Request Body
-	                            </h4>
-	                            <code class="hljs bg-dark col-md-6 mb-2">
-                            			{<br>
-                            			}
-                            	</code>
-                            </div>
-                        </div>
-                        <h5>Response</h5>
-                        <div class="callout-block callout-block-success">
-                            <div class="content">
-                                <h4 class="callout-title">
-	                                <span class="callout-icon-holder me-1">
-		                                <i class="fas fa-thumbs-up"></i>
-		                            </span><!--//icon-holder-->
-	                                Code - 200
-	                            </h4>
-	                            <code class="hljs bg-dark col-md-6 mb-2">
-                            			{<br>
-                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">200</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"App Logs Found Successfully!"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"logs"</span>: [<br>
-                            					<span class="padding-left-8">{</span><br>
-		                            				<span class="padding-left-12 hljs-attr">"log_id"</span>: <span class="hljs-literal">789</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"app_id"</span>: <span class="hljs-literal">123</span>,<br>
-	                            					<span class="padding-left-12 hljs-attr">"template_id"</span>: <span class="hljs-literal">456</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"to_email"</span>: <span class="hljs-string">"abcde1@xyz.com/abcde2@xyz.com"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"from_email"</span>: <span class="hljs-string">"admin@myapp.com"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"subject"</span>: <span class="hljs-string">"One Time Verification Code - Login | My_App"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"body_data"</span>: <span class="hljs-string">"{"variable1": "value1", "variable2": "value2", "variable3": "value3"}"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"status"</span>: <span class="hljs-string">"success or failure"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"sent_at"</span>: <span class="hljs-string">"Sun, 01 Jan 2024 02:02:02 GMT"</span><br>
-	                            				<span class="padding-left-8">}</span>,<br>
-                            					<span class="padding-left-8">{</span><br>
-		                            				<span class="padding-left-12 hljs-attr">"log_id"</span>: <span class="hljs-literal">789</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"app_id"</span>: <span class="hljs-literal">123</span>,<br>
-	                            					<span class="padding-left-12 hljs-attr">"template_id"</span>: <span class="hljs-literal">456</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"to_email"</span>: <span class="hljs-string">"abcde1@xyz.com/abcde2@xyz.com"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"from_email"</span>: <span class="hljs-string">"admin@myapp.com"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"subject"</span>: <span class="hljs-string">"One Time Verification Code - Login | My_App"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"body_data"</span>: <span class="hljs-string">"{"variable1": "value1", "variable2": "value2", "variable3": "value3"}"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"status"</span>: <span class="hljs-string">"success or failure"</span>,<br>
-		                            				<span class="padding-left-12 hljs-attr">"sent_at"</span>: <span class="hljs-string">"Sun, 01 Jan 2024 02:02:02 GMT"</span><br>
-	                            				<span class="padding-left-8">}</span><br>
-                            				<span class="padding-left-4">]</span><br>
-                            			}
-                            	</code>
-                            </div>
-                        </div>
-                        <div class="callout-block callout-block-warning">
-                            <div class="content">
-                                <h4 class="callout-title">
-	                                <span class="callout-icon-holder me-1">
-		                                <i class="fas fa-bullhorn"></i>
-		                            </span><!--//icon-holder-->
-	                                Code - 400
-	                            </h4>
-                                <code class="hljs bg-dark col-md-6 mb-2">
-                            			{<br>
-                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid App!"</span><br>
-                            			}
-                            	</code>
-                                <code class="hljs bg-dark col-md-6 mb-2">
-                            			{<br>
-                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid App or No Logs!"</span><br>
-                            			}
-                            	</code>
-                            </div><!--//content-->
-                        </div>
-                        <div class="callout-block callout-block-danger me-1">
-                            <div class="content">
-                                <h4 class="callout-title">
-	                                <span class="callout-icon-holder">
-		                                <i class="fas fa-exclamation-triangle"></i>
-		                            </span><!--//icon-holder-->
-	                                Code - 500
-	                            </h4>
-                                <code class="hljs bg-dark col-md-6 mb-2">
-                            			{<br>
-                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">500</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"error"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Error Mail App Logs Controller!"</span><br>
-                            			}
-                            	</code>
-                            </div><!--//content-->
-                        </div>
-                    </section>
-
-					<section class="docs-section" id="item-2-6-5">
 						<h2 class="section-heading">Mail/Clear Logs</h2>
                         <p>
                             This endpoint is designed to clear email logs associated with template-based emails. It allows authorized users to permanently remove log entries, ensuring that the log data is up-to-date and manageable, while also helping to maintain the organization and efficiency of the email management system.
@@ -3344,7 +3247,7 @@
 	                            </h4>
 	                            <code class="hljs bg-dark col-md-6 mb-2">
                             			{<br>
-                            				<span class="padding-left-4 hljs-attr">"template_id"</span>: <span class="hljs-string">"456"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"password"</span>: <span class="hljs-string">"PassworD#987"</span><br>
                             			}
                             	</code>
                             </div>
@@ -3354,8 +3257,8 @@
 							<table class="table table-bordered">
 								<tbody>
 								    <tr>
-									    <th class="theme-bg-light"><span class="theme-link">template_id</span></th>
-									    <td>Should be a valid and existing integer template id!</td>
+									    <th class="theme-bg-light"><span class="theme-link">password</span></th>
+									    <td>Should be 5-20 characters! Should contain alteast 1 uppercase, 1 lowercase, 1 number and 1 symbol(@$#!%*?&amp;)!</td>
 									    <td>Required</td>
 									</tr>
 								</tbody>
@@ -3374,7 +3277,7 @@
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">200</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Template Logs Cleared Successfully!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Email Logs Cleared Successfully!"</span><br>
                             			}
                             	</code>
                             </div>
@@ -3398,21 +3301,28 @@
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Template does not Exists!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid Data! Invalid Password!"</span><br>
                             			}
                             	</code>
                                 <code class="hljs bg-dark col-md-6 mb-2">
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid Template!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"User Apps not Found!"</span><br>
                             			}
                             	</code>
                                 <code class="hljs bg-dark col-md-6 mb-2">
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Template Logs does not Exists!"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"User does not Exists!"</span><br>
+                            			}
+                            	</code>
+                                <code class="hljs bg-dark col-md-6 mb-2">
+                            			{<br>
+                            				<span class="padding-left-4 hljs-attr">"code"</span>: <span class="hljs-literal">400</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"status"</span>: <span class="hljs-string">"failure"</span>,<br>
+                            				<span class="padding-left-4 hljs-attr">"message"</span>: <span class="hljs-string">"Invalid Password!"</span><br>
                             			}
                             	</code>
                             </div><!--//content-->
