@@ -6,7 +6,9 @@ bp = Blueprint('mail', __name__)
 
 @bp.before_request
 def before_request():
-    return Middlewares.authenticate_middleware()
+    skip_auth_path = ["/api/mail/simple", "/api/mail/send"]
+    if request.path not in skip_auth_path:
+        return Middlewares.authenticate_middleware()
 
 @bp.route('/simple', methods=['POST'])
 def simple_mail():

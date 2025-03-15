@@ -20,7 +20,7 @@ class MailController:
         
         try:
             
-            req_params = ['mailkey', 'app_id', 'sender', 'sender_name', 'recipient', 'subject', 'body']
+            req_params = ['mailkey', 'sender', 'sender_name', 'recipient', 'subject', 'body']
             
             for par in req_params:
                 if par not in data.keys():
@@ -31,9 +31,7 @@ class MailController:
                     }
                     return jsonify(response), 400
             
-            user_id = g.user
             mailkey = data['mailkey']
-            app_id = data['app_id']
             sender = data['sender']
             sender_name = data['sender_name']
             recipient = data['recipient']
@@ -76,19 +74,9 @@ class MailController:
                 }
                 return jsonify(response), 400
             
-            app = App.query.filter_by(app_id=app_id, user_id=user_id).first()
-            if not app:
-                response = {
-                    "code": 400,
-                    "status": "failure",
-                    "message": "App does not Exists!"
-                }
-                return jsonify(response), 400
+            user_id, app_id = ApiKey.verify_api_key(mailkey)
             
-            api_user = api_app = ''
-            api_user, api_app = ApiKey.verify_api_key(mailkey)
-            
-            if api_app != int(app_id) or api_user != user_id:
+            if user_id is None or app_id is None:
                 response = {
                     "code": 400,
                     "status": "failure",
@@ -168,7 +156,6 @@ class MailController:
                     }
                     return jsonify(response), 400
             
-            user_id = g.user
             mailkey = data['mailkey']
             recipient = data['recipient']
             params = data['params']
@@ -195,14 +182,16 @@ class MailController:
             
             app_id = int(template.app_id)
             
-            app_data = App.query.filter_by(app_id=app_id, user_id=user_id).first()
-            if not app_data:
+            app_data = App.query.filter_by(app_id=app_id).first()
+            if not app_data or app_data.api_key != mailkey:
                 response = {
                     "code": 400,
                     "status": "failure",
                     "message": "Invalid Template!"
                 }
                 return jsonify(response), 400
+            
+            user_id = app_data.user_id
             
             api_user = api_app = ''
             api_user, api_app = ApiKey.verify_api_key(mailkey)

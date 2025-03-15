@@ -2773,8 +2773,7 @@
 	                            <code class="hljs bg-dark col-md-6 mb-2">
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"Content-Type"</span>: <span class="hljs-string">"application/json"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"Accept"</span>: <span class="hljs-string">"*/*"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"Authorization"</span>: <span class="hljs-string">"Bearer {jwt_authorization_token}"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"Accept"</span>: <span class="hljs-string">"*/*"</span><br>
                             				
                             			}
                             	</code>                         
@@ -2784,7 +2783,6 @@
 	                            <code class="hljs bg-dark col-md-6 mb-2">
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"mailkey"</span>: <span class="hljs-string">"{app_mail_key}"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"app_id"</span>: <span class="hljs-string">"123"</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"sender_name"</span>: <span class="hljs-string">"My_App Admin"</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"sender"</span>: <span class="hljs-string">"admin@myapp.com"</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"recipient"</span>: <span class="hljs-string">"abcde@xyz.com"</span>,<br>
@@ -2801,11 +2799,6 @@
 								    <tr>
 									    <th class="theme-bg-light"><span class="theme-link">mailkey</span></th>
 									    <td>Should be a valid mailkey!</td>
-									    <td>Required</td>
-									</tr>
-								    <tr>
-									    <th class="theme-bg-light"><span class="theme-link">app_id</span></th>
-									    <td>Should be a valid and existing integer app id!</td>
 									    <td>Required</td>
 									</tr>
 								    <tr>
@@ -2932,8 +2925,7 @@
 	                            <code class="hljs bg-dark col-md-6 mb-2">
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"Content-Type"</span>: <span class="hljs-string">"application/json"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"Accept"</span>: <span class="hljs-string">"*/*"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"Authorization"</span>: <span class="hljs-string">"Bearer {jwt_authorization_token}"</span><br>
+                            				<span class="padding-left-4 hljs-attr">"Accept"</span>: <span class="hljs-string">"*/*"</span><br>
                             				
                             			}
                             	</code>                         
@@ -2944,15 +2936,15 @@
                             			{<br>
                             				<span class="padding-left-4 hljs-attr">"mailkey"</span>: <span class="hljs-string">"{app_mail_key}"</span>,<br>
                             				<span class="padding-left-4 hljs-attr">"template_id"</span>: <span class="hljs-string">"456"</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"recipient"</span>: <span class="hljs-string">[</span><br>
+                            				<span class="padding-left-4 hljs-attr">"recipient"</span>: <span class="hljs-attr">[</span><br>
                             					<span class="padding-left-8 hljs-attr">"abcde1@xyz.com"</span>,<br>
                             					<span class="padding-left-8 hljs-attr">"abcde2@xyz.com"</span><br>
                             				<span class="padding-left-4 hljs-attr">]</span>,<br>
-                            				<span class="padding-left-4 hljs-attr">"params"</span>: <span class="hljs-string">[</span><br>
+                            				<span class="padding-left-4 hljs-attr">"params"</span>: <span class="hljs-attr">{</span><br>
                             					<span class="padding-left-8 hljs-attr">"variable1"</span>: <span class="hljs-string">"value1"</span>,<br>
                             					<span class="padding-left-8 hljs-attr">"variable2"</span>: <span class="hljs-string">"value2"</span>,<br>
                             					<span class="padding-left-8 hljs-attr">"variable3"</span>: <span class="hljs-string">"value3"</span><br>
-                            				<span class="padding-left-4 hljs-attr">]</span><br>
+                            				<span class="padding-left-4 hljs-attr">}</span><br>
                             			}
                             	</code>
                             </div>
